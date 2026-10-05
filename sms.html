@@ -1,0 +1,85 @@
+<!-- 10. Create a simple Student Management Page using HTML and JavaScript.
+
+Your program should:
+- Take student name and course from input fields.
+- Display the student information on the webpage.
+- Use the DOM to create and modify elements.
+- Store student information in `localStorage`.
+- Retrieve the stored information when the page loads.
+- Use a search input with `querySelector()` or `querySelectorAll()` to search/display a particular student. -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="w-1/2 p-12 shadow">
+
+        <h1 class="text-4xl text-teal-600 font-bold mb-5">Student Management</h1>
+
+        <input type="text" id="name" placeholder="Student Name" class="border p-2 w-full mb-3 rounded">
+        <input type="text" id="course" placeholder="Course" class="border p-2 w-full mb-3 rounded">
+        <button id="addBtn" class="border-2 px-4 py-2 rounded-lg font-bold border-teal-600 text-teal-700">Add Student</button>
+
+        <input type="text" id="search" placeholder="Search student" class="border p-2 w-full mt-5 mb-4 rounded">
+        <div id="studentList"></div>
+
+    </div>
+
+    <script>
+
+        let name = document.querySelector("#name");
+        let course = document.querySelector("#course");
+        let list = document.querySelector("#studentList");
+        let search = document.querySelector("#search");
+
+        let students = JSON.parse(localStorage.getItem("students")) || [];
+
+        document.querySelector("#addBtn").onclick = function() {
+
+            if (name.value == "" || course.value == "") {
+                alert("Enter all details");
+                return;
+            }
+
+            students.push({
+                name: name.value,
+                course: course.value
+            });
+
+            localStorage.setItem("students", JSON.stringify(students));
+            show(students);
+
+            name.value = "";
+            course.value = "";
+        };
+
+        search.oninput = function() {
+
+            let text = search.value.toLowerCase();
+            show(students.filter(s =>
+                s.name.toLowerCase().includes(text)
+            ));
+        };
+
+        show(students);
+
+        function show(data) {
+            list.innerHTML = "";
+            data.forEach(s => {
+                list.innerHTML +=  
+                `<div class="border p-2 mb-2 rounded">
+                    Name: ${s.name} <br> Course: ${s.course}
+                </div>`;
+            });
+        }
+
+    </script>
+</body>
+</html>
